@@ -161,7 +161,7 @@ title = Label(
   bg = winbg)
 version = Label(
   FooterFrame,
-  text = 'v1.0',
+  text = 'v0.2',
   font = ('Uni Sans', 18),
   fg = blurple,
   bg = winbg)
