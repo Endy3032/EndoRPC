@@ -1,4 +1,3 @@
-# import psutil as ps
 import io, json, os, time, webbrowser
 from tkinter import *
 from threading import Thread
@@ -32,7 +31,7 @@ win.title("Endy's Discord Presence")
 win.minsize(800, 475)
 win.resizable(False, False)
 win.config(bg = winbg)
-win.iconphoto(False, PhotoImage(file = os.path.join('Assets', 'Endy.png')))
+win.iconphoto(False, PhotoImage(file = os.path.join('Assets', 'Images', 'Endy.png')))
 
 # Frames & Canvases
 RightPane = PanedWindow(orient = VERTICAL, borderwidth = 0, bg = winbg)
@@ -149,7 +148,7 @@ RPC.update(
   small_image = 'idle',
   small_text = 'Idle')
 
-default_pfp = Image.open(os.path.join('Assets', 'basepfp.png'))
+default_pfp = Image.open(os.path.join('Assets', 'Images', 'basepfp.png'))
 pic = ImageTk.PhotoImage(mask_circle(default_pfp, blurple, 0))
 
 # GUI
@@ -161,7 +160,7 @@ title = Label(
   bg = winbg)
 version = Label(
   FooterFrame,
-  text = 'v0.2',
+  text = 'v1.0',
   font = ('Uni Sans', 18),
   fg = blurple,
   bg = winbg)
@@ -226,9 +225,9 @@ def update(uname, utag, ahash, uid):
   usr_id_E.delete(0, END)
   usr_id_E.insert(0, uid)
   pfp_url = f'https://cdn.discordapp.com/avatars/{uid}/{ahash}.png?size=512'
-  path = os.path.join('Assets', 'dlpfp.png')
+  path = os.path.join('Assets', 'Images', 'dlpfp.png')
   urlretrieve(pfp_url, path)
-  pimg = Image.open(os.path.join('Assets', 'dlpfp.png'))
+  pimg = Image.open(path)
   timg = ImageTk.PhotoImage(mask_circle(pimg, blurple, 0))
   pfp.configure(image = timg)
   pfp.image = timg
@@ -287,6 +286,16 @@ FlaskApp.start()
 with open('Config.json', 'r') as first:
   first = json.load(first)
   if first['FirstRun'] == '1':
+    # varelaround = os.path.join('Assets', 'Fonts', 'VarelaRound.ttf')
+    # unisans = os.path.join('Assets', 'Fonts', 'UniSans.otf')
+    # whitneysmbold = os.path.join('Assets', 'Fonts', 'WhitneySemibold.ttf')
+    varelar = os.path.join('Assets', 'Fonts', 'VarelaRound.ttf')
+    unisans = os.path.join('Assets', 'Fonts', 'UniSans.otf')
+    whitney = os.path.join('Assets', 'Fonts', 'WhitneySemibold.ttf')
+    os.system(f'{varelar}' if os.name == 'nt' else f'open {varelar}')
+    os.system(f'{unisans}' if os.name == 'nt' else f'open {unisans}')
+    os.system(f'{whitney}' if os.name == 'nt' else f'open {whitney}')
+
     msgbox.showinfo('EndyPresence', 'Check your default browser for a new tab!')
     webbrowser.open('http://127.0.0.1:5000')
     output = json.dumps({"FirstRun": "0"})
