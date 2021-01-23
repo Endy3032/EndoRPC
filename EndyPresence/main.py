@@ -1,13 +1,18 @@
 # import psutil as ps
+import io, json, os, time, webbrowser
 from tkinter import *
 from threading import Thread
-from pypresence import Presence
 from OAuthAuthenticator import Oauth
 from tkinter import messagebox as msgbox
-from flask import Flask, request, redirect
-import io, json, os, requests, time, webbrowser
-from PIL import Image, ImageTk, ImageDraw, ImageFilter
 from urllib.request import urlopen, Request, urlretrieve, build_opener, install_opener
+try:
+  from pypresence import Presence
+  from flask import Flask, request, redirect
+  from PIL import Image, ImageTk, ImageDraw, ImageFilter
+except:
+  os.system('pip install -r requirements.txt')
+  msgbox.showinfo('EndyPresence', 'Succesfully installed dependencies! Please re-run the program.')
+  exit(0)
 
 opener = build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
