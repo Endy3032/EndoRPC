@@ -1,4 +1,5 @@
-import io, json, os, time, webbrowser
+# import psutil as ps
+import io, json, os, time, webbrowser, requests#, pyglet
 from tkinter import *
 from threading import Thread
 from OAuthAuthenticator import Oauth
@@ -17,6 +18,10 @@ opener = build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 install_opener(opener)
 
+# pyglet.font.add_file(os.path.join('Assets', 'Fonts', 'VarelaRound.ttf'))
+# pyglet.font.add_file(os.path.join('Assets', 'Fonts', 'WhitneySemibold.ttf'))
+# pyglet.font.add_file(os.path.join('Assets', 'Fonts', 'UniSans.otf'))
+
 blurple = '#7289DA'
 greyple = '#99AAB5'
 dark_bl = '#2C2F33'
@@ -28,7 +33,7 @@ winbg = dark_bl #3B4252
 # Window
 win = Tk()
 win.title("Endy's Discord Presence")
-win.minsize(800, 475)
+win.minsize(830, 550)
 win.resizable(False, False)
 win.config(bg = winbg)
 win.iconphoto(False, PhotoImage(file = os.path.join('Assets', 'Images', 'Endy.png')))
@@ -76,14 +81,27 @@ state = 'Idling'
 def gen_upd():
   webbrowser.open('http://127.0.0.1:5000')
 
-def rpc_upd(l_img, s_img, state, l_txt = None, s_txt = None, buttons = None, details = None):
+def rpc_upd():
+  l_img = limg.get()
+  s_img = simg.get()
+  state = state_E.get()
+  details = details_E.get()
+  buttons = []
+  if len(btn1_txt_E.get()) > 0 and len(btn2_txt_E.get()) > 0:
+    btn1txt = btn1_txt_E.get()
+    btn1url = btn1_url_E.get()
+    buttons.append({"label": f"{btn1txt}", "url": f"{btn1url}"})
+  if len(btn1_txt_E.get()) > 0 and len(btn2_txt_E.get()) > 0:
+    btn2txt = btn2_txt_E.get()
+    btn2url = btn2_txt_E.get()
+    buttons.append({"label": f"{btn2txt}", "url": f"{btn2url}"})
   RPC.update(
     large_image = l_img,
-    large_text = l_txt,
+    large_text = 'EndyPresence',
     small_image = s_img,
-    small_text = s_txt,
+    small_text = 'v1.0',
     state = state,
-    buttons = buttons,
+    buttons = buttons if len(buttons) != 0 else None,
     details = details
   )
 
@@ -126,6 +144,13 @@ def mask_circle(pil_img, background_color, blur_radius, offset=0):
   composited = Image.composite(pil_img, background, mask)
   return composited.resize((125, 125))
 
+def refresh():
+  with open('AssetFile.json', 'w') as DiscordAssets:
+    try:
+      response = requests.get(f'https://discordapp.com/api/oauth2/applications/{AppID}/assets')
+      DiscordAssets.write(response.text)
+    except: msgbox.showerror('Error', 'Unable to retrieve assets data. Using currently saved assets data!')
+
 roundPolygon(Canv, [10, 385, 385, 10], [0, 0, 250, 250], 7, width = 0, fill = blurple)
 Canv.create_rectangle(10, 225, 385, 270, fill = '#6c82cf', width = 0)
 roundPolygon(Canv, [10, 385, 385, 10], [225, 225, 390, 390], 5, width = 0, fill = '#6c82cf')
@@ -150,6 +175,30 @@ RPC.update(
 
 default_pfp = Image.open(os.path.join('Assets', 'Images', 'basepfp.png'))
 pic = ImageTk.PhotoImage(mask_circle(default_pfp, blurple, 0))
+
+# Assets list
+with open('AssetFile.json', 'r') as DiscordAssets:
+  asset_id = []
+  asset_name = []
+  try:
+    asset_json = json.load(DiscordAssets)
+    for i in asset_json:
+      asset_id.append(i['id'])
+      asset_name.append(i['name'])
+  except:
+    msgbox.showerror('Error', 'No assets data found. Connect to the internet and hit "Refresh" to retrieve assets data')
+    if len(asset_name) == 0:
+      asset_name.append('None')
+
+limg = StringVar(win)
+try: endyimgindex = asset_name.index('endy')
+except: endyimgindex = 0
+limg.set(asset_name[endyimgindex])
+
+simg = StringVar(win)
+try: idleimgindex = asset_name.index('idle')
+except: idleimgindex = 0
+simg.set(asset_name[idleimgindex])
 
 # GUI
 title = Label(
@@ -176,6 +225,7 @@ app_id_E = Entry(
   bg = winbg,
   fg = greyple,
   justify = 'center',
+  disabledbackground= winbg,
   highlightbackground = winbg)
 usr_id_L = Label(
   Widgets,
@@ -198,6 +248,14 @@ upd_btn = Button(
   bg = dark_bl,
   justify = 'center',
   command = gen_upd)
+rpc_btn = Button(
+  Widgets,
+  text = 'Update Presence',
+  font = ('Uni Sans', 20),
+  fg = blurple,
+  bg = dark_bl,
+  justify = 'center',
+  command = rpc_upd)
 pfp = Label(
   Canv,
   image = pic,
@@ -209,6 +267,107 @@ name = Label(
   justify = 'center',
   fg = white,
   bg = blurple)
+l_img_L = Label(
+  Widgets,
+  font = ('Uni Sans', 20),
+  text = 'LImage',
+  bg = winbg,
+  fg = greyple)
+l_img_OM = OptionMenu(
+  Widgets,
+  limg,
+  *asset_name)
+s_img_L = Label(
+  Widgets,
+  font = ('Uni Sans', 20),
+  text = 'SImage',
+  bg = winbg,
+  fg = greyple)
+s_img_OM = OptionMenu(
+  Widgets,
+  simg,
+  *asset_name)
+state_L = Label(
+  Widgets,
+  font = ('Uni Sans', 20),
+  text = 'State',
+  bg = winbg,
+  fg = greyple)
+state_E = Entry(
+  Widgets,
+  font = ('Varela Round', 20),
+  bg = winbg,
+  fg = greyple,
+  justify = 'center',
+  highlightbackground = winbg)
+details_L = Label(
+  Widgets,
+  font = ('Uni Sans', 20),
+  text = 'Details',
+  bg = winbg,
+  fg = greyple)
+details_E = Entry(
+  Widgets,
+  font = ('Varela Round', 20),
+  bg = winbg,
+  fg = greyple,
+  justify = 'center',
+  highlightbackground = winbg)
+btn1_txt_L = Label(
+  Widgets,
+  font = ('Whitney Semibold', 20),
+  text = 'Button 1 Text',
+  bg = winbg,
+  fg = greyple)
+btn1_txt_E = Entry(
+  Widgets,
+  font = ('Varela Round', 20),
+  bg = winbg,
+  fg = greyple,
+  justify = 'center',
+  highlightbackground = winbg)
+btn1_url_L = Label(
+  Widgets,
+  font = ('Whitney Semibold', 20),
+  text = 'Button 1 URL',
+  bg = winbg,
+  fg = greyple)
+btn1_url_E = Entry(
+  Widgets,
+  font = ('Varela Round', 20),
+  bg = winbg,
+  fg = greyple,
+  justify = 'center',
+  highlightbackground = winbg)
+btn2_txt_L = Label(
+  Widgets,
+  font = ('Whitney Semibold', 20),
+  text = 'Button 2 Text',
+  bg = winbg,
+  fg = greyple)
+btn2_txt_E = Entry(
+  Widgets,
+  font = ('Varela Round', 20),
+  bg = winbg,
+  fg = greyple,
+  justify = 'center',
+  highlightbackground = winbg)
+btn2_url_L = Label(
+  Widgets,
+  justify = 'center',
+  highlightbackground = winbg,
+  font = ('Whitney Semibold', 20),
+  text = 'Button 2 URL',
+  bg = winbg,
+  fg = greyple)
+btn2_url_E = Entry(
+  Widgets,
+  font = ('Varela Round', 20),
+  bg = winbg,
+  fg = greyple,
+  justify = 'center',
+  highlightbackground = winbg)
+
 
 title.pack(pady = 5)
 version.pack(pady = 5, side = LEFT, anchor = SW)
@@ -217,7 +376,29 @@ usr_id_E.grid(column = 1, columnspan = 2, row = 1, pady = 5, padx = 10)
 app_id_L.grid(column = 0, row = 0, pady = 5, padx = 10)
 app_id_E.grid(column = 1, columnspan = 2, row = 0, pady = 5, padx = 10)
 app_id_E.insert(0, '799634564875681792')
-upd_btn.grid(column = 1, row = 2, pady = 5, padx = 10)
+app_id_E.config(state = DISABLED)
+l_img_L.grid(column = 0, row = 2, pady = 5, padx = 10)
+l_img_OM.config(width = 20, bg = winbg, font = ('Varela Round', 18), fg = blurple)
+l_img_OM['menu'].config(bg = white)
+l_img_OM.grid(column = 1, columnspan = 2, row = 2, pady = 5, padx = 10)
+s_img_L.grid(column = 0, row = 3, pady = 5, padx = 10)
+s_img_OM.config(width = 20, bg = winbg, font = ('Varela Round', 18), fg = blurple)
+s_img_OM['menu'].config(bg = white)
+s_img_OM.grid(column = 1, columnspan = 2, row = 3, pady = 5, padx = 10)
+details_L.grid(column = 0, row = 4, pady = 5, padx = 10)
+details_E.grid(column = 1, columnspan = 2, row = 4, pady = 5, padx = 10)
+state_L.grid(column = 0, row = 5, pady = 5, padx = 10)
+state_E.grid(column = 1, columnspan = 2, row = 5, pady = 5, padx = 10)
+btn1_txt_L.grid(column = 0, row = 6, pady = 5, padx = 10)
+btn1_txt_E.grid(column = 1, columnspan = 2, row = 6, pady = 5, padx = 10)
+btn1_url_L.grid(column = 0, row = 7, pady = 5, padx = 10)
+btn1_url_E.grid(column = 1, columnspan = 2, row = 7, pady = 5, padx = 10)
+btn2_txt_L.grid(column = 0, row = 8, pady = 5, padx = 10)
+btn2_txt_E.grid(column = 1, columnspan = 2, row = 8, pady = 5, padx = 10)
+btn2_url_L.grid(column = 0, row = 9, pady = 5, padx = 10)
+btn2_url_E.grid(column = 1, columnspan = 2, row = 9, pady = 5, padx = 10)
+upd_btn.grid(column = 0, row = 10, pady = 5, padx = 10)
+rpc_btn.grid(column = 2, row = 10, pady = 5, padx = 10)
 pfp.pack(pady = 20)
 name.pack()
 
@@ -232,19 +413,6 @@ def update(uname, utag, ahash, uid):
   pfp.configure(image = timg)
   pfp.image = timg
   name['text'] = f'{uname}#{utag}'
-
-# Assets list
-assets = ['asset one', 'asset two', 'asset three', 'asset four']
-values = StringVar(win)
-values.set(assets[0])
-
-large_img_CB = OptionMenu(
-  Widgets,
-  values,
-  *assets)
-large_img_CB.config(width = 10, bg = dark_bl, font = ('Uni Sans', 15), fg = blurple)
-large_img_CB['menu'].config(bg = winbg)
-# large_img_CB.grid(row = 1)
 
 # FlaskServer
 # Initialize
@@ -286,16 +454,6 @@ FlaskApp.start()
 with open('Config.json', 'r') as first:
   first = json.load(first)
   if first['FirstRun'] == '1':
-    # varelaround = os.path.join('Assets', 'Fonts', 'VarelaRound.ttf')
-    # unisans = os.path.join('Assets', 'Fonts', 'UniSans.otf')
-    # whitneysmbold = os.path.join('Assets', 'Fonts', 'WhitneySemibold.ttf')
-    varelar = os.path.join('Assets', 'Fonts', 'VarelaRound.ttf')
-    unisans = os.path.join('Assets', 'Fonts', 'UniSans.otf')
-    whitney = os.path.join('Assets', 'Fonts', 'WhitneySemibold.ttf')
-    os.system(f'{varelar}' if os.name == 'nt' else f'open {varelar}')
-    os.system(f'{unisans}' if os.name == 'nt' else f'open {unisans}')
-    os.system(f'{whitney}' if os.name == 'nt' else f'open {whitney}')
-
     msgbox.showinfo('EndyPresence', 'Check your default browser for a new tab!')
     webbrowser.open('http://127.0.0.1:5000')
     output = json.dumps({"FirstRun": "0"})
@@ -309,5 +467,6 @@ with open('Config.json', 'r') as first:
       user_id = user_data['id']
       update(username, user_tag, avt_hash, user_id)
 
+refresh()
 win.protocol('WM_DELETE_WINDOW', end)
 win.mainloop()
