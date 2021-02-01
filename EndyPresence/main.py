@@ -1,11 +1,10 @@
-# import psutil as ps
-import io, json, os, time, webbrowser, requests#, pyglet
+import json, os, webbrowser
 from tkinter import *
 from threading import Thread
-from OAuthAuthenticator import Oauth
 from tkinter import messagebox as msgbox
 from urllib.request import urlopen, Request, urlretrieve, build_opener, install_opener
 try:
+  import requests
   from pypresence import Presence
   from flask import Flask, request, redirect
   from PIL import Image, ImageTk, ImageDraw, ImageFilter
@@ -14,13 +13,76 @@ except:
   msgbox.showinfo('EndyPresence', 'Succesfully installed dependencies! Please re-run the program.')
   exit(0)
 
+class Oauth(object):
+  client_id = '799634564875681792'
+  client_secret = 'NLNhwnpsbkUjPgSAWheugxlNP0WA-FYb'
+  scope = 'identify'
+  redirect_uri = 'http://127.0.0.1:5000/login'
+  discord_login_url = f'https://discord.com/api/oauth2/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope={scope}'
+  discord_token_url = f'https://discord.com/api/oauth2/token'
+  discord_api_url = f'https://discord.com/api/'
+
+  @staticmethod
+  def get_access_token(code):
+    data = {
+      'client_id': Oauth.client_id,
+      'client_secret': Oauth.client_secret,
+      'grant_type': 'authorization_code',
+      'code': code,
+      'redirect_uri': Oauth.redirect_uri,
+      'scope': Oauth.scope
+    }
+
+    headers = {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+    access_token = requests.post(url = Oauth.discord_token_url, data = data, headers = headers)
+    json = access_token.json()
+    return json.get('access_token')
+
+  @staticmethod
+  def get_user_json(access_token):
+    url = Oauth.discord_api_url + '/users/@me'
+
+    headers = {
+      "Authorization": f"Bearer {access_token}"
+    }
+
+    user_object = requests.get(url = url, headers = headers)
+    user_json = user_object.json()
+    return user_json
+  
+  @staticmethod
+  def refresh_token(refresh_token):
+    url = Oauth.discord_api_url + '/oauth2/token'
+
+    data = {
+      'client_id': Oauth.client_id,
+      'client_secret': Oauth.client_secret,
+      'grant_type': 'refresh_token',
+      'refresh_token': refresh_token,
+      'redirect_uri': Oauth.redirect_uri,
+      'scope': 'identify'
+    }
+
+    headers = {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+    refresh = requests.post(url = url, data = data, headers = headers)
+    json = refresh.json()
+    return json
+
+with open('Config.json', 'r') as firstruntest:
+  firstruntest = json.load(firstruntest)
+  if firstruntest['FirstRun'] == '1':
+    with open('AssetFile.json', 'w') as file: pass
+    with open('UserData.json', 'w') as file: pass
+
 opener = build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 install_opener(opener)
-
-# pyglet.font.add_file(os.path.join('Assets', 'Fonts', 'VarelaRound.ttf'))
-# pyglet.font.add_file(os.path.join('Assets', 'Fonts', 'WhitneySemibold.ttf'))
-# pyglet.font.add_file(os.path.join('Assets', 'Fonts', 'UniSans.otf'))
 
 blurple = '#7289DA'
 greyple = '#99AAB5'
@@ -69,7 +131,7 @@ RightPane.add(Canv)
 
 # Variables
 large_img_def = 'endy'
-large_txt_def = 'EndyPresence v1.0'
+large_txt_def = 'EndyPresence v0.95'
 small_img_def = 'idle'
 small_img_def = 'Idle'
 username = 'User'
@@ -87,14 +149,15 @@ def rpc_upd():
   state = state_E.get()
   details = details_E.get()
   buttons = []
-  if len(btn1_txt_E.get()) > 0 and len(btn2_txt_E.get()) > 0:
+  if len(btn1_txt_E.get()) != 0:
     btn1txt = btn1_txt_E.get()
     btn1url = btn1_url_E.get()
     buttons.append({"label": f"{btn1txt}", "url": f"{btn1url}"})
-  if len(btn1_txt_E.get()) > 0 and len(btn2_txt_E.get()) > 0:
+  if len(btn1_txt_E.get()) > 0:
     btn2txt = btn2_txt_E.get()
-    btn2url = btn2_txt_E.get()
-    buttons.append({"label": f"{btn2txt}", "url": f"{btn2url}"})
+    btn2url = btn2_url_E.get()
+    buttons.append({"label": f"{btn2txt}", "url": f"{btn2url}"}) if len(btn2txt) != 0 and len(btn2url) != 0 else None
+  print(buttons)
   RPC.update(
     large_image = l_img,
     large_text = 'EndyPresence',
@@ -177,6 +240,7 @@ default_pfp = Image.open(os.path.join('Assets', 'Images', 'basepfp.png'))
 pic = ImageTk.PhotoImage(mask_circle(default_pfp, blurple, 0))
 
 # Assets list
+refresh()
 with open('AssetFile.json', 'r') as DiscordAssets:
   asset_id = []
   asset_name = []
@@ -287,19 +351,6 @@ s_img_OM = OptionMenu(
   Widgets,
   simg,
   *asset_name)
-state_L = Label(
-  Widgets,
-  font = ('Uni Sans', 20),
-  text = 'State',
-  bg = winbg,
-  fg = greyple)
-state_E = Entry(
-  Widgets,
-  font = ('Varela Round', 20),
-  bg = winbg,
-  fg = greyple,
-  justify = 'center',
-  highlightbackground = winbg)
 details_L = Label(
   Widgets,
   font = ('Uni Sans', 20),
@@ -307,6 +358,19 @@ details_L = Label(
   bg = winbg,
   fg = greyple)
 details_E = Entry(
+  Widgets,
+  font = ('Varela Round', 20),
+  bg = winbg,
+  fg = greyple,
+  justify = 'center',
+  highlightbackground = winbg)
+state_L = Label(
+  Widgets,
+  font = ('Uni Sans', 20),
+  text = 'State',
+  bg = winbg,
+  fg = greyple)
+state_E = Entry(
   Widgets,
   font = ('Varela Round', 20),
   bg = winbg,
