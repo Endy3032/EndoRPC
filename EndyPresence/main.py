@@ -20,7 +20,7 @@ with open('Config.json', 'r') as firstruntest:
     with open('AssetFile.json', 'w') as file: pass
     with open('UserData.json', 'w') as file: pass
     with open('PresenceConfig.json', 'w') as file:
-      PData = {'limg': 'endy', 'simg': 'idle', 'ltxt': 'EndyPresence', 'stxt': 'Idle', 'details': 'EndyPresence', 'state': 'v1.0', 'b1txt': '', 'b1url': '', 'b2txt': '', 'b2url': ''}
+      PData = {'limg': 'endy', 'simg': 'idle', 'ltxt': 'EndyPresence', 'stxt': 'Idle', 'details': 'EndyPresence', 'state': 'v0.97', 'b1txt': '', 'b1url': '', 'b2txt': '', 'b2url': ''}
       file.write(json.dumps(PData))
 
 class Oauth(object):
@@ -282,7 +282,7 @@ name = Label(
   bg = blurple)
 version = Label(
   RightPane,
-  text = 'v1.0',
+  text = 'v0.97',
   font = ('Uni Sans', 18),
   fg = blurple,
   bg = winbg)
