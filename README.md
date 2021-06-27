@@ -9,11 +9,16 @@ EndyPresence is a Python script that allows you to customize your Discord Presen
 
 ## Installation
 
-Download the code using the green code button above
+Grab the latest release from the releases page!
+
+## Notes
+
+If you're reading this, I probably haven't updated my code yet since it's 3AM when I'm updating this file.
 
 ## Usage
 
-Open up an IDE of your choice and choose "Open Folder" then navigate to the EndyPresence folder then open. Then run the `main.py` file and login to Discord in the default browser. Customize the presence to your liking!
+If you cloned the repo, open up an IDE of your choice and choose "Open Folder" then navigate to the EndyPresence folder then open. Then run the `main.py` file and login to Discord in the default browser. Customize the presence to your liking!
+If you downloaded the release, just open the .exe file
 
 Check out [PyPresence](https://github.com/qwertyquerty/pypresence) (the module used to make this possible)
 
