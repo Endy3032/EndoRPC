@@ -2,7 +2,8 @@
 
 [![pypresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
 [![Python](https://img.shields.io/badge/python-%2314354C.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![license](https://img.shields.io/github/license/enderhoang/endypresence.svg?style=for-the-badge)](https://github.com/enderhoang/pypresence/blob/master/LICENSE)[![GitHub last commit](https://img.shields.io/github/last-commit/enderhoang/endypresence.svg?style=for-the-badge)](https://github.com/Enderhoang/EndyPresence/commit/main)
+[![license](https://img.shields.io/github/license/enderhoang/endypresence.svg?style=for-the-badge)](https://github.com/enderhoang/pypresence/blob/master/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/enderhoang/endypresence.svg?style=for-the-badge)](https://github.com/Enderhoang/EndyPresence/commit/main)
 <!-- ![GitHub top language](https://img.shields.io/github/languages/top/enderhoang/endypresence.svg?style=for-the-badge) -->
 
 ## What is EndyPresence?
