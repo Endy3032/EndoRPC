@@ -11,23 +11,23 @@
 EndyPresence is a Python-based application that allows you to customize your Discord Presence. It features its own made UI using Qt Designer.
 <!-- EndyPresence is a Python script that allows you to customize your Discord Presence. It comes with its own made UI. -->
 
-## Installation
+<!-- ## Installation -->
 
-Grab the latest release and execute the app and you're good to go!
+<!-- Grab the latest release and execute the app and you're good to go! -->
 
-## Notes
+<!-- ## Notes -->
 
-If you're reading this, version v1.0 is not out yet. It will come out soon. I'll update the source code after the 1.0 release!
+<!-- If you're reading this, version v1.0 is not out yet. It will come out soon. I'll update the source code after the 1.0 release! -->
 
 ## Usage
 
-### Way 1. Cloning the repo/Downloading the source code
+### Cloning the repo/Downloading the source code
 
 There are several ways to run the file if you have the source code. Use an IDE and run the `main.py` file or just use the command line to execute it.
 
-### Way 2. Downloading the executable from release
+<!-- ### Way 2. Downloading the executable from release -->
 
-If you're on Windows, grab the latest `.exe` file from the release. If you're on macOS, grab the latest `.app` file from the release. If you're on Linux, run the `main.py` file from source (I can't compile a Linux version since I don't have a Linux machine, too lazy to use a VM even though I have one around :))
+<!-- If you're on Windows, grab the latest `.exe` file from the release. If you're on macOS, grab the latest `.app` file from the release. If you're on Linux, run the `main.py` file from source (I can't compile a Linux version since I don't have a Linux machine, too lazy to use a VM even though I have one around :)) -->
 <!-- If you cloned the repo, open up an IDE of your choice and choose "Open Folder" then navigate to the EndyPresence folder then open. Then run the `main.py` file and login to Discord in the default browser. Customize the presence to your liking!
 If you downloaded the release, just open the .exe file -->
 
