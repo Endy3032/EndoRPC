@@ -3,15 +3,26 @@ from threading import Thread
 from urllib.request import build_opener, install_opener
 current_dir = os.path.abspath(os.path.dirname(__file__))
 
+# Messagebox Function
+def msg(title, message):
+  if sys.platform == 'darwin':
+    os.system(f"osascript -e 'Tell application \"System Events\" to display dialog \"{message}\" with title \"{title}\"'")
+  elif sys.platform == 'win32':
+    ctypes.windll.user32.MessageBoxW(0, message, title, 0)
+
 try:
   import requests
   from PyQt6 import QtWidgets
-  from UI import Ui_MainWindow
+  if sys.platform == 'darwin':
+    from UIM import Ui_MainWindow
+  elif sys.platform == 'win32':
+    from UIW import UI_MainWindow
+
   from pypresence import Presence
   from flask import Flask, request, redirect
 except:
-  os.system(f'pip3.9 install -r {os.path.join(current_dir, "requirements.txt")}')
-  os.system("osascript -e 'Tell application \"System Events\" to display dialog \"Dependencies installed. Reopen the program to continue!\" with title \"EndyPresence\"'")
+  os.system(f'pip3.9 install -r {os.path.join(current_dir, "Resources", "requirements.txt")}')
+  msg("EndyPresence", "Dependencies installed. Reopen the program to continue!")
   exit(0)
 
 # Setup
@@ -135,7 +146,7 @@ def update_rpc(limg, simg, ltxt, stxt, details, state, b1t, b1u, b2t, b2u):
     small_image = simg if len(simg) > 0 else None,
     details = details if len(details) >= 2 else None,
     state = state if len(state) >= 2 else None,
-    buttons = buttons if len(buttons) != 0 else None,
+    buttons = buttons or None,
     large_text = ltxt if len(ltxt) >= 2 else None,
     small_text = stxt if len(stxt) >= 2 else None
   )
@@ -172,7 +183,7 @@ with open(os.path.join(current_dir, "Database.json"), "r+") as db:
   user_tag = userdata["UD"][0]["tag"]
   ui.update_appid_label(AppID)
   if firstrun["FR"] == 1:
-    os.system("osascript -e 'Tell application \"System Events\" to display dialog \"Check your browser to authorize!\" with title \"EndyPresence\"'")
+    msg("EndyPresence - Authorization", "Check your browser to authorize")
     webbrowser.open("http://127.0.0.1:3032")
   else:
     ui.update(userdata["UD"][0]["name"], userdata["UD"][0]["tag"], userdata["UD"][0]["pfp_hash"], userdata["UD"][0]["user_id"])
@@ -187,7 +198,7 @@ try:
              ui.detailse.toPlainText(), ui.statee.toPlainText(), ui.b1txte.toPlainText(), ui.b1urle.toPlainText(),
              ui.b2txte.toPlainText(), ui.b2urle.toPlainText())
 except:
-  os.system("osascript -e 'Tell application \"System Events\" to display dialog \"Can't connect to Discord RPC. Check if Discord is currently running.\" with title \"EndyPresence - Connection Error\"'")
+  msg("EndyPresence - Connection Error", "Can't connect to Discord RPC. Check if Discord is currently running.")
 
 
 MainWindow.show()
