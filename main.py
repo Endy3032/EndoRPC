@@ -1,7 +1,25 @@
-import json, os, sys, webbrowser, ctypes
+import json, os, sys, webbrowser, ctypes, appdirs, requests, PyQt6.sip
+from PyQt6 import QtWidgets
 from threading import Thread
+from pypresence import Presence
+from flask import Flask, request, redirect
 from urllib.request import build_opener, install_opener
-current_dir = os.path.abspath(os.path.dirname(__file__))
+
+dat_dir = appdirs.user_data_dir('EndyPresence', 'Endy3032')
+file_dir = os.path.join(dat_dir, 'db.json')
+static_dir = os.path.abspath(os.path.dirname(__file__))
+
+if not os.path.exists(file_dir):
+  default = '[{"FR": 1},{"AD": []},{"PD": [{"limg": "endy","simg": "idle","ltxt": "EndyPresence","stxt": "Idle","details": "EndyPresence","state": "v1.0","b1txt": "","b1url": "","b2txt": "","b2url": ""}]},{"UD": [{"name": "User","tag": "XXXX","pfp_hash": "","user_id": ""}]},{"AppID": 799634564875681792}]'
+  os.makedirs(file_dir.replace('db.json', ''))
+  with open(file_dir, 'w') as f:
+    f.write(default)
+
+if sys.platform == 'darwin':
+  from static.UIM import Ui_MainWindow
+elif sys.platform == 'win32':
+  from static.UIW import UI_MainWindow
+
 
 # Messagebox Function
 def msg(title, message):
@@ -10,20 +28,24 @@ def msg(title, message):
   elif sys.platform == 'win32':
     ctypes.windll.user32.MessageBoxW(0, message, title, 0)
 
+'''
 try:
   import requests
+  import appdirs
   from PyQt6 import QtWidgets
+  import PyQt6.sip
   if sys.platform == 'darwin':
-    from UIM import Ui_MainWindow
+    from Resources.UIM import Ui_MainWindow
   elif sys.platform == 'win32':
-    from UIW import UI_MainWindow
+    from Resources.UIW import UI_MainWindow
 
   from pypresence import Presence
   from flask import Flask, request, redirect
 except:
-  os.system(f'pip3.9 install -r {os.path.join(current_dir, "Resources", "requirements.txt")}')
+  os.system(f'pip3.9 install -r {os.path.join(datdir, "Resources", "requirements.txt")}')
   msg("EndyPresence", "Dependencies installed. Reopen the program to continue!")
   exit(0)
+'''
 
 # Setup
 app = QtWidgets.QApplication(sys.argv)
@@ -110,7 +132,7 @@ def login():
   pfp_hash = user_json["avatar"]
   user_id = user_json["id"]
   ui.update(username, user_tag, pfp_hash, user_id)
-  with open(os.path.join(current_dir, "Database.json"), "r+") as db:
+  with open(file_dir, "r+") as db:
     data = json.load(db)
     firstrun = data[0]
     other = data[1:3]
@@ -156,7 +178,7 @@ def update_rpc(limg, simg, ltxt, stxt, details, state, b1t, b1u, b2t, b2u):
 ui.rpcb.clicked.connect(lambda: update_rpc(str(ui.limge.currentText()), str(ui.simge.currentText()), ui.ltxte.toPlainText(), ui.stxte.toPlainText(), ui.detailse.toPlainText(), ui.statee.toPlainText(), ui.b1txte.toPlainText(), ui.b1urle.toPlainText(), ui.b2txte.toPlainText(), ui.b2urle.toPlainText()))
 
 def refresh_asset():
-  with open(os.path.join(current_dir, 'Database.json'), 'r+') as db:
+  with open(file_dir, 'r+') as db:
     data = json.load(db)
     firstrun = data[0]
     rpcasset = data[1]
@@ -171,7 +193,7 @@ def refresh_asset():
 
 
 # Test for first run and setup data
-with open(os.path.join(current_dir, "Database.json"), "r+") as db:
+with open(file_dir, "r+") as db:
   refresh_asset()
   data = json.load(db)
   firstrun = data[0]

@@ -1,1 +1,8 @@
 __pycache__
+build
+dist
+*.spec
+*.ui
+*.qrc
+test.py
+venv
