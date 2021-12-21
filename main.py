@@ -1,55 +1,42 @@
-import json, os, sys, webbrowser, ctypes, appdirs, requests, PyQt6.sip
-from PyQt6 import QtWidgets
 from threading import Thread
+from requests import post, get
 from pypresence import Presence
+from webbrowser import open as op
+from appdirs import user_data_dir
+from json import loads, load, dumps
+from os import path, makedirs, system
+from sys import platform, argv, exit as ex
 from flask import Flask, request, redirect
+from PyQt6.QtWidgets import QApplication, QMainWindow
 from urllib.request import build_opener, install_opener
 
-dat_dir = appdirs.user_data_dir('EndyPresence', 'Endy3032')
-file_dir = os.path.join(dat_dir, 'db.json')
-static_dir = os.path.abspath(os.path.dirname(__file__))
+dat_dir = user_data_dir('EndyPresence', 'Endy3032')
+file_dir = path.join(dat_dir, 'db.json')
+static_dir = path.abspath(path.dirname(__file__))
 
-if not os.path.exists(file_dir):
+if not path.exists(file_dir):
   default = '[{"FR": 1},{"AD": []},{"PD": [{"limg": "endy","simg": "idle","ltxt": "EndyPresence","stxt": "Idle","details": "EndyPresence","state": "v1.0","b1txt": "","b1url": "","b2txt": "","b2url": ""}]},{"UD": [{"name": "User","tag": "XXXX","pfp_hash": "","user_id": ""}]},{"AppID": 799634564875681792}]'
-  os.makedirs(file_dir.replace('db.json', ''))
+  makedirs(file_dir.replace('db.json', ''))
   with open(file_dir, 'w') as f:
     f.write(default)
 
-if sys.platform == 'darwin':
+if platform == 'darwin':
   from static.UIM import Ui_MainWindow
-elif sys.platform == 'win32':
+elif platform == 'win32':
+  from ctypes.windll.user32 import MessageBoxW
   from static.UIW import UI_MainWindow
 
 
 # Messagebox Function
 def msg(title, message):
-  if sys.platform == 'darwin':
-    os.system(f"osascript -e 'Tell application \"System Events\" to display dialog \"{message}\" with title \"{title}\"'")
-  elif sys.platform == 'win32':
-    ctypes.windll.user32.MessageBoxW(0, message, title, 0)
-
-'''
-try:
-  import requests
-  import appdirs
-  from PyQt6 import QtWidgets
-  import PyQt6.sip
-  if sys.platform == 'darwin':
-    from Resources.UIM import Ui_MainWindow
-  elif sys.platform == 'win32':
-    from Resources.UIW import UI_MainWindow
-
-  from pypresence import Presence
-  from flask import Flask, request, redirect
-except:
-  os.system(f'pip3.9 install -r {os.path.join(datdir, "Resources", "requirements.txt")}')
-  msg("EndyPresence", "Dependencies installed. Reopen the program to continue!")
-  exit(0)
-'''
+  if platform == 'darwin':
+    system(f'''osascript -e 'Tell application "System Events" to display dialog "{message}" with title "{title}"''')
+  elif platform == 'win32':
+    MessageBoxW(0, message, title, 0)
 
 # Setup
-app = QtWidgets.QApplication(sys.argv)
-MainWindow = QtWidgets.QMainWindow()
+app = QApplication(argv)
+MainWindow = QMainWindow()
 ui = Ui_MainWindow()
 ui.setupUi(MainWindow)
 
@@ -83,14 +70,14 @@ class Oauth(object):
     }
 
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    access_token = requests.post(url=Oauth.discord_token_url, data=data, headers=headers)
+    access_token = post(url=Oauth.discord_token_url, data=data, headers=headers)
     return access_token.json().get("access_token")
 
   @staticmethod
   def get_user_json(access_token):
     url = Oauth.discord_api_url + "/users/@me"
     headers = {"Authorization": f"Bearer {access_token}"}
-    return requests.get(url=url, headers=headers).json()
+    return get(url=url, headers=headers).json()
 
   @staticmethod
   def refresh_token(refresh_token):
@@ -104,7 +91,7 @@ class Oauth(object):
       "scope": "identify"
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    return requests.post(url=url, data=data, headers=headers).json()
+    return post(url=url, data=data, headers=headers).json()
 
 
 # FlaskServer
@@ -133,7 +120,7 @@ def login():
   user_id = user_json["id"]
   ui.update(username, user_tag, pfp_hash, user_id)
   with open(file_dir, "r+") as db:
-    data = json.load(db)
+    data = load(db)
     firstrun = data[0]
     other = data[1:3]
     userdata = data[3]
@@ -146,7 +133,7 @@ def login():
     userdata["UD"][0]["user_id"] = user_id
     db.seek(0)
     ls = [firstrun, other[0], other[1], userdata, appid]
-    db.write(json.dumps(ls))
+    db.write(dumps(ls))
     db.truncate()
 
   return "<script>alert('Authorization complete! You can now close the tab and return to the app');</script>"
@@ -155,7 +142,6 @@ def login():
 @webserver.route("/refresh", methods=["get"])
 def refresh():
   return "<script>alert('Authorization complete! You can now return to the app');</script>", redirect(Oauth.discord_login_url)
-
 
 FlaskApp.start()
 
@@ -179,23 +165,23 @@ ui.rpcb.clicked.connect(lambda: update_rpc(str(ui.limge.currentText()), str(ui.s
 
 def refresh_asset():
   with open(file_dir, 'r+') as db:
-    data = json.load(db)
+    data = load(db)
     firstrun = data[0]
     rpcasset = data[1]
     presence = data[2]
     userdata = data[3]
     AppID = data[4]
-    rpcasset["AD"] = json.loads(requests.get(f'https://discordapp.com/api/oauth2/applications/{AppID["AppID"]}/assets').text)
+    rpcasset["AD"] = loads(get(f'https://discordapp.com/api/oauth2/applications/{AppID["AppID"]}/assets').text)
     ls = [firstrun, rpcasset, presence, userdata, AppID]
     db.seek(0)
-    db.write(json.dumps(ls))
+    db.write(dumps(ls))
     db.truncate()
 
 
 # Test for first run and setup data
 with open(file_dir, "r+") as db:
   refresh_asset()
-  data = json.load(db)
+  data = load(db)
   firstrun = data[0]
   rpcasset = data[1]
   presence = data[2]
@@ -206,7 +192,7 @@ with open(file_dir, "r+") as db:
   ui.update_appid_label(AppID)
   if firstrun["FR"] == 1:
     msg("EndyPresence - Authorization", "Check your browser to authorize")
-    webbrowser.open("http://127.0.0.1:3032")
+    op("http://127.0.0.1:3032")
   else:
     ui.update(userdata["UD"][0]["name"], userdata["UD"][0]["tag"], userdata["UD"][0]["pfp_hash"], userdata["UD"][0]["user_id"])
   ui.load_presence()
@@ -216,12 +202,21 @@ with open(file_dir, "r+") as db:
 RPC = Presence(AppID)
 try:
   RPC.connect()
-  update_rpc(str(ui.limge.currentText()), str(ui.simge.currentText()), ui.ltxte.toPlainText(), ui.stxte.toPlainText(),
-             ui.detailse.toPlainText(), ui.statee.toPlainText(), ui.b1txte.toPlainText(), ui.b1urle.toPlainText(),
-             ui.b2txte.toPlainText(), ui.b2urle.toPlainText())
+  update_rpc(
+    str(ui.limge.currentText()),
+    str(ui.simge.currentText()),
+    ui.ltxte.toPlainText(),
+    ui.stxte.toPlainText(),
+    ui.detailse.toPlainText(),
+    ui.statee.toPlainText(),
+    ui.b1txte.toPlainText(),
+    ui.b1urle.toPlainText(),
+    ui.b2txte.toPlainText(),
+    ui.b2urle.toPlainText()
+  )
 except:
   msg("EndyPresence - Connection Error", "Can't connect to Discord RPC. Check if Discord is currently running.")
 
 
 MainWindow.show()
-sys.exit(app.exec())
+ex(app.exec())

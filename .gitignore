@@ -6,3 +6,5 @@ dist
 *.qrc
 test.py
 venv
+.vscode
+.DS_Store
