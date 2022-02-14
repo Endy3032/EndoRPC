@@ -8,3 +8,4 @@ test.py
 venv
 .vscode
 .DS_Store
+static/.DS_Store
