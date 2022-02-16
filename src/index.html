@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>EndyRPC</title>
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <base target="_blank">
+  <script src="https://kit.fontawesome.com/7acb5fd0cc.js" crossorigin="anonymous"></script>
   <style>
     :root {
       --blurple: #5865F2;
@@ -15,11 +16,14 @@
       --white: #FFFFFF;
       --black: #000000;
       --grey: #23272A;
+      --dark-greyple: #778893;
+      --greyple: #99AAB5;
+      --bright-greyple: #CCDDE8;
     }
 
     @font-face {
       font-family: "Ginto";
-      src: url("./Resources/Ginto-Regular.ttf");
+      src: url("./Resources/Fonts/GintoVariable.ttf");
     }
 
     html, body {
@@ -27,25 +31,21 @@
       height: 100%;
       margin: 0;
       padding: 0;
-      font-family: "SF Compact Rounded";
-    }
-
-    #hello {
-      transform: translate(-50%, -50%);
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: fit-content;
-      text-align: center;
-      color: white;
+      font-size: 1em;
+      font-family: "Ginto", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      color: var(--white);
     }
 
     #titlebar {
       position: relative;
+    }
+
+    #titlebar #bar {
       width: 100%;
       height: 2.35rem;
       opacity: 0.35;
       background-color: var(--grey);
+      font-variation-settings: 'wght' 400;
       box-shadow: 0 0 5px rgba(0, 0, 0, 1);
       -webkit-app-region: drag;
     }
@@ -55,24 +55,327 @@
       left: 50%;
       top: 50%;
       font-size: 1rem;
-      color: var(--white);
+      color: var(--greyple);
       transform: translate(-50%, -50%);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      margin: 1.25rem auto;
+      max-width: min(70rem, 100vw);
+    }
+
+    header {
+      max-width: 100%;
+      margin: 0.15rem;
+      font-size: 2em;
+      text-align: center;
+      color: var(--blurple);
+      font-variation-settings: 'wght' 800;
+    }
+
+    .editor, .preview {
+      flex: 1;
+      width: min(50%, 100vw);
+      padding-bottom: 1.75rem;
+    }
+    
+    .preview {
+      border: 1px solid orange;
+      position: relative;
+    }
+
+    .input-group {
+      position: relative;
+      width: 100%;
+      padding-top: 1.75rem;
+    }
+
+    input, select {
+      display: block;
+      margin: 0 auto;
+      padding-left: 0.35rem;
+      
+      position: relative;
+      top: 0;
+      width: 90%;
+      min-height: 2.25rem;
+      
+      outline: none;
+      border: 2px solid #222428;
+      
+      border-radius: 8px;
+      background: #303339;
+      box-shadow: 0px 5px 10px #00000080;
+      
+      color: var(--bright_greyple);
+      font-family: "Ginto", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-size: 1.25rem;
+      
+      transition: all 0.6s cubic-bezier(.1,.3,.1,1);
+    }
+
+    label {
+      position: absolute;
+      bottom: 0.6rem;
+      left: 2rem;
+      color: var(--dark-greyple);
+      transition: all 0.6s cubic-bezier(.1,.3,.1,1);
+    }
+    
+    input:hover, input:focus, select:hover, select:focus {
+      top: -0.3rem;
+      background: #404349;
+      border: 2px solid #323438;
+      box-shadow: 0px 3px 3px #00000080;
+    }
+    
+    input:hover ~ label {
+      bottom: 0.9rem;
+    }
+
+    input:focus ~ label, input:not(:placeholder-shown) ~ label {
+      color: var(--bright-greyple);
+      font-size: 0.75rem;
+      left: 1.75rem;
+    }
+    
+    input:not(:placeholder-shown):hover ~ label, input:focus ~ label {
+      bottom: 3rem;
+    }
+
+    input:not(:hover, :focus, :placeholder-shown) ~ label, .input-group strong {
+      bottom: 2.7rem;
+    }
+
+    select {
+      width: 92%;
+      min-height: 2.65rem;
+      margin-top: 1rem;
+    }
+
+    .input-group strong {
+      position: absolute;
+      bottom: 2.7rem;
+      left: 1.75rem;
+      font-size: 0.75rem;
+      color: var(--greyple);
+      transition: all 0.6s cubic-bezier(.1,.3,.1,1);
+    }
+
+    select:hover ~ strong, select:focus ~ strong {
+      bottom: 3rem;
+    }
+
+    footer {
+      position: absolute;
+      width: 100%;
+      height: 2.5rem;
+      bottom: 0;
+    }
+    
+    footer a {
+      display: block;
+      transform: translate(-50%, 0%);
+      
+      position: fixed;
+      left: 50%;
+      bottom: 1%;
+      
+      width: fit-content;
+      padding: 0.3rem 0.5rem;
+      border-radius: 0.5rem;
+      outline: none;
+
+      font-size: 1rem;
+      text-align: center;
+      color: var(--greyple);
+      text-decoration: none;
+      
+      transition: all 0.5s cubic-bezier(.5,.2,.15,.75);
+    }
+
+    footer a:hover, footer a:focus {
+      color: var(--bright_greyple);
+      bottom: 1.75%;
+    }
+
+    footer a:focus {
+      box-shadow: 0 0 5px var(--bright-greyple)
+    }
+
+    .background {
+      width: 90%;
+      height: 86%;
+
+      position: relative;
+      margin: 1.65rem auto;
+      border-radius: 8px;
+      box-shadow: 0px 5px 10px #00000080;
+      background: #28292C
+    }
+
+    .foreground {
+      width: 100%;
+      height: 60%;
+
+      position: relative;
+      top: 5.5rem;
+      background: #18191C;
+      border-radius: 0 0 8px 8px
+    }
+
+    .pfp {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 5.65rem;
+      left: 5.75rem;
+      border-radius: 50%;
+    }
+
+    .pfpouter {
+      width: 8.65rem;
+      height: 8.65rem;
+      background: #18191C;
+    }
+
+    .pfpinner {
+      width: 7.9rem;
+      height: 7.9rem;
+      background: #28292C;
+    }
+
+    .name {
+      font-size: 1.95rem;
+      position: absolute;
+      top: 15.6rem;
+      left: 3.6rem;
+      font-variation-settings: 'wght' 500;
+    }
+
+    .name .username {
+      color: #fff;
+    }
+
+    .name .tag {
+      margin-left: -0.4rem;
+      color: #B9BBBE;
+    }
+
+    hr {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 18.5rem;
+      left: 50%;
+      width: 80%;
+      border: 1px solid #262729;
+    }
+
+    .limg {
     }
   </style>
 </head>
 
 <body>
   <div id="titlebar">
+    <div id="bar"></div>
     <strong id="title">EndyRPC</strong>
   </div>
-  <div id="hello">
-    <h1>Hello World!!!!</h1>
-    <p>
-      Node.JS <span id="node-version"></span>,
-      Chromium <span id="chrome-version"></span>,
-      and Electron <span id="electron-version"></span>.
-    </p>
+  <div class="container">
+    <div class="editor">
+      <header>Editor</header>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>App ID</label>
+      </div>
+      <div class="input-group">
+        <select>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+        <strong>Large Image</strong>
+      </div>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>Large Image Text</label>
+      </div>
+      <div class="input-group">
+        <select>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+        <strong>Small Image</strong>
+      </div>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>Small Image Text</label>
+      </div>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>State</label>
+      </div>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>Details</label>
+      </div>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>Button 1 Text</label>
+      </div>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>Button 1 URL</label>
+      </div>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>Button 2 Text</label>
+      </div>
+      <div class="input-group">
+        <input placeholder=" " type="text">
+        <label>Button 2 URL</label>
+      </div>
+    </div>
+    <div class="preview">
+      <header>Preview</header>
+      <div class="background">
+        <div class="foreground"></div>
+        <div class="pfpouter pfp"></div>
+        <div class="pfpinner pfp"></div>
+      </div>
+      <div class="name">
+        <span class="username">User</span>
+        <span class="tag">#1234</span>
+      </div>
+      <hr>
+      <div class="presence">
+        <span class="title">PLAYING A GAME</span>
+        <div class="limg"></div>
+        <div class="simg"></div>
+        <div class="appdetails">
+          <span class="appname">Application</span>
+          <span class="state">State</span>
+          <span class="details">Details</span>
+          <span class="elapsed">AB:CD elapsed</span>
+        </div>
+        <div class="btn1"></div>
+        <div class="btn2"></div>
+      </div>
+      <div class="options">
+        <div class="showelapsed"></div>
+        <div class="uappid"></div>
+        <div class="urpc"></div>
+      </div>
+    </div>
   </div>
+  <footer>
+    <a href="https://github.com/Endy3032/EndyRPC">
+      <i class="fa-brands fa-github"></i>
+      GitHub Repo
+    </a>
+  </footer>
+  <script src="renderer.js"></script>
 </body>
-
 </html>
