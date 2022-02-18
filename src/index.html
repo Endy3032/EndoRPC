@@ -19,6 +19,8 @@
       --dark-greyple: #778893;
       --greyple: #99AAB5;
       --bright-greyple: #CCDDE8;
+      --bg: #18191C;
+      --object: #28292C;
     }
 
     @font-face {
@@ -34,19 +36,24 @@
       font-size: 1em;
       font-family: "Ginto", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       color: var(--white);
+      user-select: none;
     }
 
     #titlebar {
-      position: relative;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: fit-content;
+      z-index: 9;
     }
 
     #titlebar #bar {
       width: 100%;
       height: 2.35rem;
-      opacity: 0.35;
-      background-color: var(--grey);
+      background: var(--grey)/80;
+      backdrop-filter: blur(10px);
       font-variation-settings: 'wght' 400;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+      box-shadow: 0 0 5px #000;
       -webkit-app-region: drag;
     }
 
@@ -62,27 +69,29 @@
     .container {
       display: flex;
       flex-direction: row;
-      margin: 1.25rem auto;
+      margin: 0 auto;
+      padding-top: 3.5rem;
+      padding-bottom: 1.5rem;
       max-width: min(70rem, 100vw);
     }
 
     header {
       max-width: 100%;
-      margin: 0.15rem;
+      margin: 0.1rem;
       font-size: 2em;
       text-align: center;
       color: var(--blurple);
       font-variation-settings: 'wght' 800;
     }
 
-    .editor, .preview {
-      flex: 1;
+    .editor {
+      flex: 1.1;
       width: min(50%, 100vw);
       padding-bottom: 1.75rem;
     }
     
     .preview {
-      border: 1px solid orange;
+      flex: 0.9;
       position: relative;
     }
 
@@ -122,9 +131,10 @@
       left: 2rem;
       color: var(--dark-greyple);
       transition: all 0.6s cubic-bezier(.1,.3,.1,1);
+      pointer-events: none;
     }
     
-    input:hover, input:focus, select:hover, select:focus {
+    input:hover, input:focus, select:hover, select:focus, label:hover input {
       top: -0.3rem;
       background: #404349;
       border: 2px solid #323438;
@@ -169,7 +179,7 @@
     }
 
     footer {
-      position: absolute;
+      position: fixed;
       width: 100%;
       height: 2.5rem;
       bottom: 0;
@@ -193,12 +203,12 @@
       color: var(--greyple);
       text-decoration: none;
       
-      transition: all 0.5s cubic-bezier(.5,.2,.15,.75);
+      transition: all 0.25s cubic-bezier(.25,0,0,1)
     }
 
     footer a:hover, footer a:focus {
       color: var(--bright_greyple);
-      bottom: 1.75%;
+      bottom: 1.5%;
     }
 
     footer a:focus {
@@ -207,13 +217,13 @@
 
     .background {
       width: 90%;
-      height: 86%;
+      height: 83.5%;
 
       position: relative;
       margin: 1.65rem auto;
       border-radius: 8px;
       box-shadow: 0px 5px 10px #00000080;
-      background: #28292C
+      background: var(--object)
     }
 
     .foreground {
@@ -222,34 +232,28 @@
 
       position: relative;
       top: 5.5rem;
-      background: #18191C;
+      background: var(--bg);
       border-radius: 0 0 8px 8px
     }
 
     .pfp {
-      position: absolute;
       transform: translate(-50%, -50%);
+      position: absolute;
       top: 5.65rem;
       left: 5.75rem;
+      
       border-radius: 50%;
-    }
-
-    .pfpouter {
-      width: 8.65rem;
-      height: 8.65rem;
-      background: #18191C;
-    }
-
-    .pfpinner {
-      width: 7.9rem;
-      height: 7.9rem;
-      background: #28292C;
+      outline: 0.375rem solid var(--bg);
+      
+      width: 7.85rem;
+      height: 7.85rem;
+      background: var(--object);
     }
 
     .name {
-      font-size: 1.95rem;
+      font-size: 1.9rem;
       position: absolute;
-      top: 15.6rem;
+      top: 15.65rem;
       left: 3.6rem;
       font-variation-settings: 'wght' 500;
     }
@@ -272,7 +276,105 @@
       border: 1px solid #262729;
     }
 
+    .title {
+      position: absolute;
+      top: 20.125rem;
+      left: 3.675rem;
+
+      font-size: 1.1rem;
+      font-variation-settings: 'wght' 700;
+      color: #b9bbbe;
+    }
+
     .limg {
+      transform: translate(-50%, -50%);
+      position: absolute;
+      top: 25.15rem;
+      left: 6.4rem;
+
+      width: 5.55rem;
+      height: 5.55rem;
+      background: var(--object);
+
+      border-radius: 14px;
+    }
+
+    .simg {
+      transform: translate(-50%, -50%);
+      position: absolute;
+      top: 27.375rem;
+      left: 8.55rem;
+
+      width: 2rem;
+      height: 2rem;
+      background: var(--object);
+      outline: 3px solid var(--bg);
+
+      border-radius: 50%;
+    }
+
+    .appdetails {
+      transform: translate(0, -50%);
+      position: absolute;
+      left: 32.5%;
+      top: 25.35rem;
+
+      width: 60%;
+      height: fit-content;
+    }
+    
+    .appdetails p {
+      display: -webkit-box;
+      margin: 0;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+
+    .appdetails .appname {
+      font-variation-settings: 'wght' 600;
+    }
+
+    .btn {
+      transform: translate(-50%, -50%);
+      position: absolute;
+      left: 50%;
+      width: 80%;
+      height: 2.75rem;
+      background: #4f545c;
+      border-radius: 0.25rem;
+      box-shadow: 0px 3px 3px #00000080;
+      cursor: pointer;
+      text-align: center;
+      line-height: 2.75rem;
+      font-size: 1.1rem;
+      font-variation-settings: 'wght' 500;
+    }
+
+    .btn1 {
+      top: 30.5rem;
+    }
+
+    .btn2 {
+      top: 34.15rem;
+    }
+
+    ::-webkit-scrollbar {
+      width: 0.5rem;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0005;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--dark-greyple);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--greyple);
     }
   </style>
 </head>
@@ -342,8 +444,7 @@
       <header>Preview</header>
       <div class="background">
         <div class="foreground"></div>
-        <div class="pfpouter pfp"></div>
-        <div class="pfpinner pfp"></div>
+        <div class="pfp"></div>
       </div>
       <div class="name">
         <span class="username">User</span>
@@ -355,13 +456,13 @@
         <div class="limg"></div>
         <div class="simg"></div>
         <div class="appdetails">
-          <span class="appname">Application</span>
-          <span class="state">State</span>
-          <span class="details">Details</span>
-          <span class="elapsed">AB:CD elapsed</span>
+          <p class="appname">Application</p>
+          <p class="state">State</p>
+          <p class="details">Details</p>
+          <p class="elapsed">AB:CD elapsed</p>
         </div>
-        <div class="btn1"></div>
-        <div class="btn2"></div>
+        <div class="btn1 btn">Button 1</div>
+        <div class="btn2 btn">Button 2</div>
       </div>
       <div class="options">
         <div class="showelapsed"></div>

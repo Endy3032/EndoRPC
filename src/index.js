@@ -13,10 +13,10 @@ function createWindow() {
     autoHideMenuBar: true,
     vibrancy: "fullscreen-ui",
     titleBarStyle: "hiddenInset",
-    width: 1080,
-    height: 970,
-    minWidth: 1080,
-    minHeight: 970
+    width: 1120,
+    height: 960,
+    minWidth: 1120,
+    minHeight: 960
   })
 
   mainWindow.loadFile("src/index.html")
