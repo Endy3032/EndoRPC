@@ -70,8 +70,7 @@
       display: flex;
       flex-direction: row;
       margin: 0 auto;
-      padding-top: 3.5rem;
-      padding-bottom: 1.5rem;
+      padding-top: 3.25rem;
       max-width: min(70rem, 100vw);
     }
 
@@ -82,6 +81,7 @@
       text-align: center;
       color: var(--blurple);
       font-variation-settings: 'wght' 800;
+      text-shadow: 0px 3px 5px #00000080;
     }
 
     .editor {
@@ -101,7 +101,7 @@
       padding-top: 1.75rem;
     }
 
-    input, select {
+    input[type="text"], select {
       display: block;
       margin: 0 auto;
       padding-left: 0.35rem;
@@ -134,28 +134,28 @@
       pointer-events: none;
     }
     
-    input:hover, input:focus, select:hover, select:focus, label:hover input {
+    input[type="text"]:hover, input[type="text"]:focus, select:hover, select:focus, label:hover input[type="text"] {
       top: -0.3rem;
       background: #404349;
       border: 2px solid #323438;
       box-shadow: 0px 3px 3px #00000080;
     }
     
-    input:hover ~ label {
+    input[type="text"]:hover ~ label {
       bottom: 0.9rem;
     }
 
-    input:focus ~ label, input:not(:placeholder-shown) ~ label {
+    input[type="text"]:focus ~ label, input[type="text"]:not(:placeholder-shown) ~ label {
       color: var(--bright-greyple);
       font-size: 0.75rem;
       left: 1.75rem;
     }
     
-    input:not(:placeholder-shown):hover ~ label, input:focus ~ label {
+    input[type="text"]:not(:placeholder-shown):hover ~ label, input[type="text"]:focus ~ label {
       bottom: 3rem;
     }
 
-    input:not(:hover, :focus, :placeholder-shown) ~ label, .input-group strong {
+    input[type="text"]:not(:hover, :focus, :placeholder-shown) ~ label, .input-group strong {
       bottom: 2.7rem;
     }
 
@@ -176,43 +176,6 @@
 
     select:hover ~ strong, select:focus ~ strong {
       bottom: 3rem;
-    }
-
-    footer {
-      position: fixed;
-      width: 100%;
-      height: 2.5rem;
-      bottom: 0;
-    }
-    
-    footer a {
-      display: block;
-      transform: translate(-50%, 0%);
-      
-      position: fixed;
-      left: 50%;
-      bottom: 1%;
-      
-      width: fit-content;
-      padding: 0.3rem 0.5rem;
-      border-radius: 0.5rem;
-      outline: none;
-
-      font-size: 1rem;
-      text-align: center;
-      color: var(--greyple);
-      text-decoration: none;
-      
-      transition: all 0.25s cubic-bezier(.25,0,0,1)
-    }
-
-    footer a:hover, footer a:focus {
-      color: var(--bright_greyple);
-      bottom: 1.5%;
-    }
-
-    footer a:focus {
-      box-shadow: 0 0 5px var(--bright-greyple)
     }
 
     .background {
@@ -340,17 +303,29 @@
     .btn {
       transform: translate(-50%, -50%);
       position: absolute;
+      top: 0;
       left: 50%;
       width: 80%;
       height: 2.75rem;
       background: #4f545c;
       border-radius: 0.25rem;
-      box-shadow: 0px 3px 3px #00000080;
+      box-shadow: 0px 5px 10px #00000080;
       cursor: pointer;
       text-align: center;
       line-height: 2.75rem;
       font-size: 1.1rem;
       font-variation-settings: 'wght' 500;
+      transition: all 0.17s ease;
+    }
+
+    .btn:hover {
+      background: #5d6269;
+      box-shadow: 0px 3px 3px #00000080;
+    }
+    
+    .btn:active {
+      background: #6d7279;
+      box-shadow: 0px 0px 0px #00000080;
     }
 
     .btn1 {
@@ -375,6 +350,86 @@
 
     ::-webkit-scrollbar-thumb:hover {
       background: var(--greyple);
+    }
+
+    .showelapsed {
+      transform: translate(0, -50%);
+      position: absolute;
+      top: 39.75rem;
+      left: 3.25rem;
+    }
+
+    .checkmark {
+      position: relative;
+      top: 0;
+      width: 3rem;
+      height: 1.8rem;
+      background: #72767d;
+      border-radius: 1.8rem;
+      cursor: pointer;
+      box-shadow: 0px 5px 10px #00000080;
+      transition: all 0.25s cubic-bezier(.1,.3,.1,1);
+    }
+
+    .checkmark:hover {
+      box-shadow: 0px 3px 3px #00000080;
+    }
+    
+    .checkmark:active {
+      box-shadow: 0px 0px 0px #00000080;
+      top: 0.15rem;
+    }
+
+    .checkmark.on {
+      background: #34a461;
+    }
+
+    .checkmark .thumb {
+      transform: translate(0, -50%);
+      position: absolute;
+      top: 50%;
+      width: 1.35rem;
+      height: 1.35rem;
+      background: #fff;
+      border-radius: 0.75rem;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(.1,.3,.1,1), width 0.15s cubic-bezier(.1,.3,.3,1);
+    }
+
+    .checkmark .thumb.Lleft {
+      left: 0.225rem;
+    }
+
+    .checkmark .thumb.Lright {
+      left: 1.425rem;
+    }
+
+    .checkmark .thumb.Rleft {
+      right: 1.425rem;
+    }
+
+    .checkmark .thumb.Rright {
+      right: 0.225rem;
+    }
+
+    .checkmark:active .thumb {
+      width: 1.85rem;
+    }
+
+    .showelapsed .label {
+      position: absolute;
+      top: 0.08rem;
+      left: 4rem;
+      line-height: 1.8rem;
+      width: max-content;
+    }
+
+    .btn.uappid {
+      top: 43.2rem;
+    }
+
+    .btn.urpc {
+      top: 47rem;
     }
   </style>
 </head>
@@ -465,18 +520,38 @@
         <div class="btn2 btn">Button 2</div>
       </div>
       <div class="options">
-        <div class="showelapsed"></div>
-        <div class="uappid"></div>
-        <div class="urpc"></div>
+        <div class="showelapsed">
+          <div class="checkmark" onclick="toggleCheckmark()">
+            <div class="thumb Lleft"></div>
+          </div>
+          <div class="label">Show Elapsed Time</div>
+        </div>
+        <div class="btn uappid">Update App ID</div>
+        <div class="btn urpc">Update RPC</div>
       </div>
     </div>
   </div>
-  <footer>
-    <a href="https://github.com/Endy3032/EndyRPC">
-      <i class="fa-brands fa-github"></i>
-      GitHub Repo
-    </a>
-  </footer>
-  <script src="renderer.js"></script>
+  <script>
+    active = false
+
+    function toggleCheckmark() {
+      if (active) {return}
+      active = true
+
+      checkmark = document.querySelector(".checkmark")
+      thumb = document.querySelector(".checkmark .thumb")
+      checkmark.classList.toggle("on")
+      
+      if (!Object.values(checkmark.classList).includes("on")) {
+        thumb.classList.toggle("Rleft")
+        thumb.classList.toggle("Rright")
+        setTimeout(function() {thumb.classList.toggle("Lleft"); thumb.classList.toggle("Rleft"); active = false}, 150)
+      } else {
+        thumb.classList.toggle("Lright")
+        thumb.classList.toggle("Lleft")
+        setTimeout(function() {thumb.classList.toggle("Rright"); thumb.classList.toggle("Lright"); active = false}, 150)
+      }
+    }
+  </script>
 </body>
 </html>

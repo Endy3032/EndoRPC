@@ -14,9 +14,9 @@ function createWindow() {
     vibrancy: "fullscreen-ui",
     titleBarStyle: "hiddenInset",
     width: 1120,
-    height: 960,
+    height: 930,
     minWidth: 1120,
-    minHeight: 960
+    minHeight: 930
   })
 
   mainWindow.loadFile("src/index.html")
