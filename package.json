@@ -5,11 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "make": "electron-forge make",
     "package": "electron-forge package",
-    "make-mac": "npx @electron-forge/cli make --platform darwin",
-    "make-linux": "npx @electron-forge/cli make --platform linux --targets deb",
-    "make": "npx @electron-forge/cli make"
+    "make-mac": "npx @electron-forge/cli make --platform darwin"
   },
   "repository": {
     "type": "git",
@@ -43,7 +41,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./static/Images/icon"
+        "icon": "./src/Resources/Images/icon"
       }
     }
   }
