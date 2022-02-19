@@ -253,6 +253,7 @@
       transform: translate(-50%, -50%);
       position: absolute;
       background: var(--object) center/cover;
+      z-index: 5;
     }
 
     .limg {
@@ -277,9 +278,9 @@
     }
 
     .img .imglabel {
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -100%) scale(90%);
       position: absolute;
-      top: -2rem;
+      top: -1.25rem;
       left: 0.9rem;
       width: max-content;
       height: fit-content;
@@ -295,7 +296,8 @@
       box-shadow: 0 3px 5px #00000080;
       
       pointer-events: none;
-      transition: all 0.15s cubic-bezier(.1,.3,.1,1);
+      transition: all 0.1s cubic-bezier(.5,.01,.5,1.65);
+      z-index: 5;
     }
 
     .limg .imglabel {
@@ -304,7 +306,8 @@
 
     .img:hover .imglabel:not([class*="hide"]) {
       opacity: 1;
-      top: -2.5rem;
+      top: -1.5rem;
+      transform: translate(-50%, -100%) scale(100%);
     }
 
     .appdetails {
