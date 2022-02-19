@@ -1,5 +1,5 @@
 const DiscordRPC = require("discord-rpc")
-const { app, BrowserWindow, shell } = require("electron")
+const { app, BrowserWindow, ipcMain, shell } = require("electron")
 const path = require("path")
 
 let mainWindow
@@ -31,9 +31,7 @@ function createWindow() {
   })
 }
 
-app.whenReady().then(() => {
-  createWindow()
-})
+app.whenReady().then(createWindow)
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
@@ -47,21 +45,22 @@ app.on("window-all-closed", () => {
   }
 })
 
-const clientId = "799634564875681792"
-DiscordRPC.register(clientId)
+const appId = "799634564875681792"
+DiscordRPC.register(appId)
 const rpc = new DiscordRPC.Client({ transport: "ipc" })
 
 rpc.on("ready", () => {
   console.log("Ready")
-  // setPresence(rpc, { details: "wwwwwoooooooooo" })
 })
 
-// try {
-//   require("electron-reloader")(module, {
-//     debug: true,
-//     watchRenderer: true,
-//     ignore: ["out", "node_modules", "src/Resources"],
-//   })
-// } catch (_) { console.log("Error") }    
+ipcMain.on("updateRPC", (event, arg) => {
+  rpc.setActivity(arg)
+  event.returnValue = "success"
+})
 
-// rpc.login({ clientId }).catch(console.error)
+ipcMain.on("updateAppID", (event, arg) => {
+  DiscordRPC.register(arg)
+  event.returnValue = "success"
+})
+
+rpc.login({ clientId: appId }).catch(console.error)

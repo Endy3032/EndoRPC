@@ -29,6 +29,8 @@
   },
   "homepage": "https://github.com/Endy3032/EndyPresence#readme",
   "dependencies": {
+    "axios": "^0.26.0",
+    "discord-rich-presence": "^0.0.8",
     "discord-rpc": "^4.0.1",
     "electron-acrylic-window": "^0.5.11",
     "electron-reloader": "^1.2.2"
@@ -45,5 +47,4 @@
       }
     }
   }
-
 }

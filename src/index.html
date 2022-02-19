@@ -98,7 +98,7 @@
     .input-group {
       position: relative;
       width: 100%;
-      padding-top: 1.75rem;
+      padding-top: 1.43rem;
     }
 
     input[type="text"], select {
@@ -109,7 +109,7 @@
       position: relative;
       top: 0;
       width: 90%;
-      min-height: 2.25rem;
+      min-height: 2rem;
       
       outline: none;
       border: 2px solid #222428;
@@ -120,14 +120,14 @@
       
       color: var(--bright_greyple);
       font-family: "Ginto", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      font-size: 1.25rem;
+      font-size: 1rem;
       
       transition: all 0.6s cubic-bezier(.1,.3,.1,1);
     }
 
     label {
       position: absolute;
-      bottom: 0.6rem;
+      bottom: 0.5rem;
       left: 2rem;
       color: var(--dark-greyple);
       transition: all 0.6s cubic-bezier(.1,.3,.1,1);
@@ -135,47 +135,47 @@
     }
     
     input[type="text"]:hover, input[type="text"]:focus, select:hover, select:focus, label:hover input[type="text"] {
-      top: -0.3rem;
+      top: -0.2rem;
       background: #404349;
       border: 2px solid #323438;
       box-shadow: 0px 3px 3px #00000080;
     }
     
     input[type="text"]:hover ~ label {
-      bottom: 0.9rem;
+      bottom: 0.7rem;
     }
 
     input[type="text"]:focus ~ label, input[type="text"]:not(:placeholder-shown) ~ label {
       color: var(--bright-greyple);
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       left: 1.75rem;
     }
     
     input[type="text"]:not(:placeholder-shown):hover ~ label, input[type="text"]:focus ~ label {
-      bottom: 3rem;
+      bottom: 2.65rem;
     }
 
     input[type="text"]:not(:hover, :focus, :placeholder-shown) ~ label, .input-group strong {
-      bottom: 2.7rem;
+      bottom: 2.45rem;
     }
 
     select {
       width: 92%;
-      min-height: 2.65rem;
-      margin-top: 1rem;
+      min-height: 2.25rem;
+      margin-top: 0.5rem;
     }
 
     .input-group strong {
       position: absolute;
-      bottom: 2.7rem;
+      bottom: 2.35rem;
       left: 1.75rem;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--greyple);
       transition: all 0.6s cubic-bezier(.1,.3,.1,1);
     }
 
     select:hover ~ strong, select:focus ~ strong {
-      bottom: 3rem;
+      bottom: 2.55rem;
     }
 
     .background {
@@ -210,7 +210,7 @@
       
       width: 7.85rem;
       height: 7.85rem;
-      background: var(--object);
+      background: url("./Resources/Images/BasePFP.png") center/contain;
     }
 
     .name {
@@ -249,31 +249,62 @@
       color: #b9bbbe;
     }
 
-    .limg {
+    .img {
       transform: translate(-50%, -50%);
       position: absolute;
+      background: var(--object) center/cover;
+    }
+
+    .limg {
       top: 25.15rem;
       left: 6.4rem;
 
       width: 5.55rem;
       height: 5.55rem;
-      background: var(--object);
 
       border-radius: 14px;
     }
 
     .simg {
-      transform: translate(-50%, -50%);
-      position: absolute;
       top: 27.375rem;
       left: 8.55rem;
 
       width: 2rem;
       height: 2rem;
-      background: var(--object);
       outline: 3px solid var(--bg);
 
       border-radius: 50%;
+    }
+
+    .img .imglabel {
+      transform: translate(-50%, -50%);
+      position: absolute;
+      top: -2rem;
+      left: 0.9rem;
+      width: max-content;
+      height: fit-content;
+
+      color: #fff;
+      font-size: 1rem;
+      
+      padding: 0.35rem 0.5rem;
+      border-radius: 0.25rem;
+      
+      opacity: 0;
+      background: var(--grey);
+      box-shadow: 0 3px 5px #00000080;
+      
+      pointer-events: none;
+      transition: all 0.15s cubic-bezier(.1,.3,.1,1);
+    }
+
+    .limg .imglabel {
+      left: 2.75rem;
+    }
+
+    .img:hover .imglabel:not([class*="hide"]) {
+      opacity: 1;
+      top: -2.5rem;
     }
 
     .appdetails {
@@ -294,6 +325,10 @@
       text-overflow: ellipsis;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
+    }
+
+    .appdetails .elapsed.hide {
+      display: none;
     }
 
     .appdetails .appname {
@@ -443,56 +478,56 @@
     <div class="editor">
       <header>Editor</header>
       <div class="input-group">
-        <input placeholder=" " type="text">
+        <input id="appid" placeholder=" " type="text">
         <label>App ID</label>
       </div>
       <div class="input-group">
-        <select>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-        </select>
+        <select id="limg"></select>
         <strong>Large Image</strong>
       </div>
       <div class="input-group">
-        <input placeholder=" " type="text">
+        <input id="ltxt" placeholder=" " type="text">
         <label>Large Image Text</label>
       </div>
       <div class="input-group">
-        <select>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-        </select>
+        <select id="simg"></select>
         <strong>Small Image</strong>
       </div>
       <div class="input-group">
-        <input placeholder=" " type="text">
+        <input id="stxt" placeholder=" " type="text">
         <label>Small Image Text</label>
       </div>
       <div class="input-group">
-        <input placeholder=" " type="text">
-        <label>State</label>
-      </div>
-      <div class="input-group">
-        <input placeholder=" " type="text">
+        <input id="details" placeholder=" " type="text">
         <label>Details</label>
       </div>
       <div class="input-group">
-        <input placeholder=" " type="text">
+        <input id="state" placeholder=" " type="text">
+        <label>State</label>
+      </div>
+      <div class="input-group">
+        <input id="b1txt" placeholder=" " type="text">
         <label>Button 1 Text</label>
       </div>
       <div class="input-group">
-        <input placeholder=" " type="text">
+        <input id="b1url" placeholder=" " type="text">
         <label>Button 1 URL</label>
       </div>
       <div class="input-group">
-        <input placeholder=" " type="text">
+        <input id="b2txt" placeholder=" " type="text">
         <label>Button 2 Text</label>
       </div>
       <div class="input-group">
-        <input placeholder=" " type="text">
+        <input id="b2url" placeholder=" " type="text">
         <label>Button 2 URL</label>
+      </div>
+      <div class="input-group">
+        <input id="size" placeholder=" " type="text">
+        <label>Party Size (Requires State & Party Max)</label>
+      </div>
+      <div class="input-group">
+        <input id="max" placeholder=" " type="text">
+        <label>Party Max (Requires State & Party Size)</label>
       </div>
     </div>
     <div class="preview">
@@ -508,13 +543,13 @@
       <hr>
       <div class="presence">
         <span class="title">PLAYING A GAME</span>
-        <div class="limg"></div>
-        <div class="simg"></div>
+        <div class="limg img"><p class="imglabel hide"></p></div>
+        <div class="simg img"><p class="imglabel hide"></p></div>
         <div class="appdetails">
           <p class="appname">Application</p>
-          <p class="state">State</p>
           <p class="details">Details</p>
-          <p class="elapsed">AB:CD elapsed</p>
+          <p class="state">State</p>
+          <p class="elapsed hide">AB:CD elapsed</p>
         </div>
         <div class="btn1 btn">Button 1</div>
         <div class="btn2 btn">Button 2</div>
@@ -526,32 +561,16 @@
           </div>
           <div class="label">Show Elapsed Time</div>
         </div>
-        <div class="btn uappid">Update App ID</div>
-        <div class="btn urpc">Update RPC</div>
+        <div class="btn uappid" onclick="updateAppID()">Update App ID</div>
+        <div class="btn urpc" onclick="updateRPC()">Update RPC</div>
       </div>
     </div>
   </div>
+  <script src="renderer.js"></script>
   <script>
-    active = false
-
-    function toggleCheckmark() {
-      if (active) {return}
-      active = true
-
-      checkmark = document.querySelector(".checkmark")
-      thumb = document.querySelector(".checkmark .thumb")
-      checkmark.classList.toggle("on")
-      
-      if (!Object.values(checkmark.classList).includes("on")) {
-        thumb.classList.toggle("Rleft")
-        thumb.classList.toggle("Rright")
-        setTimeout(function() {thumb.classList.toggle("Lleft"); thumb.classList.toggle("Rleft"); active = false}, 150)
-      } else {
-        thumb.classList.toggle("Lright")
-        thumb.classList.toggle("Lleft")
-        setTimeout(function() {thumb.classList.toggle("Rright"); thumb.classList.toggle("Lright"); active = false}, 150)
-      }
-    }
+    appid = document.querySelector("#appid")
+    appid.value = "799634564875681792"
+    updateAssets(appid.value)
   </script>
 </body>
 </html>
